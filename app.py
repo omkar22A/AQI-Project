@@ -5,9 +5,9 @@ import pickle
 # Load trained model
 model = pickle.load(open("model.pkl", "rb"))
 
-st.title("🌍 Air Quality Index (AQI) Prediction")
+st.title("🌍 Air Quality Index (AQI) Prediction System")
 
-st.write("Enter pollution values to predict AQI")
+st.write("Enter pollutant values below:")
 
 # Inputs
 pm25 = st.number_input("PM2.5")
@@ -17,14 +17,14 @@ so2 = st.number_input("SO2")
 co = st.number_input("CO")
 o3 = st.number_input("O3")
 
-# Predict button
+# Predict
 if st.button("Predict AQI"):
     input_data = np.array([[pm25, pm10, no2, so2, co, o3]])
     prediction = model.predict(input_data)[0]
 
     st.subheader(f"Predicted AQI: {prediction:.2f}")
 
-    # AQI Category
+    # Category
     if prediction <= 50:
         st.success("Good 😊")
     elif prediction <= 100:
