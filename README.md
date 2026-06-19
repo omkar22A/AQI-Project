@@ -13,7 +13,7 @@
 
 A machine learning web application that predicts the **Air Quality Index (AQI)** of Indian cities based on real pollutant concentration data. The system compares multiple regression models, selects the best performer, and serves predictions through an interactive **Streamlit** interface with health advisories and feature importance visualizations.
 
-> 🔗 **Live Demo:** [aqi-predictor.streamlit.app](#) ← *(update after deployment)*
+> 🔗 **Live Demo:** [omkar22a-aqi-project-app-gee99u.streamlit.app](https://omkar22a-aqi-project-app-gee99u.streamlit.app/)
 > 📁 **Dataset:** [Air Quality Data in India — Kaggle](https://www.kaggle.com/datasets/rohanrao/air-quality-data-in-india)
 
 ---
@@ -242,13 +242,12 @@ AQI-Project/
 │
 ├── aqi_data.csv            # Cleaned dataset (generated from city_day.csv)
 ├── city_day.csv            # Raw Kaggle dataset (do not commit — add to .gitignore)
+├── model.pkl               # Trained Gradient Boosting model
 │
 ├── requirements.txt        # Python dependencies
 ├── .gitignore
 └── README.md
 ```
-
-> ⚠️ `model.pkl` and `city_day.csv` are not committed. Run `python train.py` after cloning to generate `model.pkl`.
 
 ---
 
@@ -309,25 +308,18 @@ streamlit run app.py
 
 ## 📸 Screenshots
 
-> *(Add screenshots of your Streamlit app here after running it)*
-
-```
-screenshots/
-├── home_screen.png
-├── prediction_result.png
-└── feature_importance_chart.png
-```
+> *(Add screenshots of your Streamlit app here)*
 
 ---
 
 ## 🚀 Future Improvements
 
-- [ ] Add EDA notebook with full visualizations (`notebook.ipynb`)
+- [x] Add EDA notebook with full visualizations (`notebook.ipynb`)
+- [x] Deploy on Streamlit Community Cloud with public URL
 - [ ] Integrate live AQI data from OpenAQ v3 API for real-time predictions
 - [ ] Add city-wise AQI prediction using location dropdown
 - [ ] Hyperparameter tuning with GridSearchCV for better model performance
 - [ ] Add time-series forecasting (LSTM) to predict AQI for next 24 hours
-- [ ] Deploy on Streamlit Community Cloud with public URL
 - [ ] Add map visualization showing AQI levels across Indian cities
 - [ ] Support multi-language UI (Hindi, Marathi, Tamil)
 
@@ -380,7 +372,7 @@ pip install -r requirements.txt
 
 ## 👤 Author
 
-**Omkar**
+**Omkar Avasarkar**
 B.Tech Student | Aspiring Data Scientist
 
 ---
@@ -395,9 +387,9 @@ This project is licensed under the **MIT License** — feel free to use, modify,
 
 | Platform | Link |
 |----------|------|
-| 💼 LinkedIn | [linkedin.com/in/your-profile](#) ← update this |
+| 💼 LinkedIn | [linkedin.com/in/omkar-avasarkar-3460b9402](https://www.linkedin.com/in/omkar-avasarkar-3460b9402/) |
 | 🐙 GitHub | [github.com/omkar22A](https://github.com/omkar22A) |
-| 📧 Email | your.email@gmail.com ← update this |
+| 📧 Email | avasarkaromkar22@gmail.com |
 
 ---
 
