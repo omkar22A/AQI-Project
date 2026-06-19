@@ -1,4 +1,5 @@
 import streamlit as st
+# AQI Predictor v2
 import numpy as np
 import pandas as pd
 import pickle
@@ -16,12 +17,13 @@ st.set_page_config(
 
 @st.cache_resource
 def load_model():
-    with open("model.pkl", "rb") as f:
-        return pickle.load(f)
+    saved = pickle.load(open("model.pkl", "rb"))
+    if isinstance(saved, dict):
+        return saved["model"], saved["features"]
+    else:
+        return saved, ["PM2.5", "PM10", "NO2", "SO2", "CO", "O3"]
 
-model = load_model()
-
-FEATURES = ["PM2.5", "PM10", "NO2", "SO2", "CO", "O3"]
+model, FEATURES = load_model()
 
 # ── AQI helpers ───────────────────────────────────────────────────────────────
 
@@ -72,6 +74,8 @@ inputs = {}
 validation_errors = []
 
 for i, feature in enumerate(FEATURES):
+    if feature not in POLLUTANT_CONFIG:
+        continue
     min_val, max_val, default, unit, help_text = POLLUTANT_CONFIG[feature]
     col = col1 if i % 2 == 0 else col2
 
@@ -87,14 +91,14 @@ for i, feature in enumerate(FEATURES):
         )
         inputs[feature] = val
 
-        # Individual range warning
         if val == min_val and feature != "CO":
             st.caption(f"⚠️ 0 is unusually low for {feature}.")
 
 # ── Cross-field validation ────────────────────────────────────────────────────
 
-if inputs["PM2.5"] > inputs["PM10"]:
-    validation_errors.append("PM2.5 should not exceed PM10 (finer particles are a subset of coarser ones).")
+if "PM2.5" in inputs and "PM10" in inputs:
+    if inputs["PM2.5"] > inputs["PM10"]:
+        validation_errors.append("PM2.5 should not exceed PM10 (finer particles are a subset of coarser ones).")
 
 if validation_errors:
     for err in validation_errors:
@@ -148,11 +152,11 @@ if predict_btn:
     st.markdown("#### AQI Scale")
     scale_cols = st.columns(5)
     categories_display = [
-        ("Good", "#2e7d32", "0–50"),
-        ("Moderate", "#f9a825", "51–100"),
-        ("Poor", "#e65100", "101–200"),
+        ("Good",      "#2e7d32", "0–50"),
+        ("Moderate",  "#f9a825", "51–100"),
+        ("Poor",      "#e65100", "101–200"),
         ("Very Poor", "#b71c1c", "201–300"),
-        ("Severe", "#212121", "301–500"),
+        ("Severe",    "#212121", "301–500"),
     ]
     for idx, (cat_name, cat_color, cat_range) in enumerate(categories_display):
         is_current = cat_name == label
@@ -195,7 +199,6 @@ if predict_btn:
                   for p in fi_df["Pollutant"]]
         bars = ax.barh(fi_df["Pollutant"], fi_df["Importance"], color=colors, height=0.55)
 
-        # Value labels on bars
         for bar, val in zip(bars, fi_df["Importance"]):
             ax.text(
                 bar.get_width() + 0.002, bar.get_y() + bar.get_height() / 2,
@@ -220,10 +223,9 @@ if predict_btn:
         )
 
     else:
-        # Fallback for non-tree models: show input values as a bar chart
         st.markdown("#### Your Input Values")
         fig, ax = plt.subplots(figsize=(6, 3))
-        normalized = [inputs[f] / POLLUTANT_CONFIG[f][1] for f in FEATURES]
+        normalized = [inputs[f] / POLLUTANT_CONFIG[f][1] for f in FEATURES if f in POLLUTANT_CONFIG]
         ax.barh(FEATURES, normalized, color="#1976d2", height=0.55)
         ax.set_xlabel("Value as % of max safe range", fontsize=9)
         ax.spines[["top", "right"]].set_visible(False)
@@ -238,6 +240,6 @@ if predict_btn:
 st.divider()
 st.caption(
     "Data reference: CPCB AQI standards. "
-    "Model: trained on historical pollutant measurements. "
+    "Model trained on 16,010 real measurements from 26 Indian cities (2015–2020). "
     "For informational purposes only."
 )
